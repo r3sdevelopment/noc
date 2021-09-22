@@ -1,26 +1,18 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import keycloak from './service/keycloak';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+    const handleLogin = async () => {
+        const jwt = await keycloak.login({ username: 'user1', password: 'test' });
+        console.log(keycloak.token);
+        keycloak.token.verify(jwt.access_token)
+    };
+    return (
+        <div>
+            <h1>noc.r3s.dev</h1>
+            <button onClick={handleLogin} type="button">login</button>
+        </div>
+    );
+};
 
 export default App;
