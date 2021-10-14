@@ -1,8 +1,17 @@
+# syntax = docker/dockerfile:1.3-labs
+
 FROM node:16-alpine AS builder
 ENV NODE_ENV production
 WORKDIR /app
 ARG NPM_TOKEN
-COPY .npmrc .npmrc
+
+RUN <<EOF cat >> .npmrc
+# NPM config
+registry=https://npm.r3s.dev/
+always-auth=true
+//npm.r3s.dev/:_authToken="${NPM_TOKEN}"
+EOF
+
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . ./
