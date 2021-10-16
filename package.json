@@ -1,6 +1,6 @@
 {
   "name": "noc",
-  "version": "0.1.0-alpha7",
+  "version": "0.1.0-alpha8",
   "private": true,
   "scripts": {
     "start": "react-scripts start",

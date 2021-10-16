@@ -13,6 +13,8 @@ const Authentication = () => {
     const [token, setToken] = useState<Token | null>(null);
     const [error, setError] = useState<Error | null>(null);
 
+    const isLoggedIn = !!token;
+
     const reset = () => {
         setError(null)
         setUsername('');
@@ -46,25 +48,35 @@ const Authentication = () => {
         }
     }
 
+    const getTokenDetails = (token: Token) => {
+        return {
+            isValid: token?.isValid(),
+            isAdmin: token?.hasRole("admin"),
+            isUser: token?.hasRole("user")
+        }
+    }
+
     return (
         <div className={styles.authentication}>
-            <input type="text" autoComplete="username" onChange={e => setUsername(e.target.value)} value={username}/>
-            <input type="password" autoComplete="current-password" onChange={e => setPassword(e.target.value)}
-                   value={password}/>
             {
-                !!token
+                isLoggedIn
                     ?
                     <button onClick={handleLogout}>logout</button>
                     :
-                    <button onClick={handleLogin}>login</button>
+                    <React.Fragment>
+                        <input type="text" autoComplete="username" onChange={e => setUsername(e.target.value)} placeholder="username" value={username}/>
+                        <input type="password" autoComplete="current-password" placeholder="password" onChange={e => setPassword(e.target.value)}
+                               value={password}/>
+                        <button onClick={handleLogin}>login</button>
+                    </React.Fragment>
             }
             {
-                !!token && (
+                isLoggedIn && (
                     <div className={styles.authentication}>
                         <h3>Token</h3>
                         <code>
                             <pre>
-                                {JSON.stringify(token.value, undefined, 2)}
+                                {JSON.stringify(getTokenDetails(token), undefined, 2)}
                             </pre>
                         </code>
                     </div>
