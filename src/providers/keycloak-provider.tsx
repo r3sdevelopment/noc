@@ -7,6 +7,7 @@ import { keycloak } from "../services/keycloak";
 interface KeycloakContext {
     error: Error | null;
     isLoggedIn: boolean;
+    isAdmin: boolean;
     login: (username: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     token: Token | null;
@@ -15,6 +16,7 @@ interface KeycloakContext {
 const Context = React.createContext<KeycloakContext>({
     error: null,
     isLoggedIn: false,
+    isAdmin: false,
     login: () => Promise.resolve(),
     logout: () => Promise.resolve(),
     token: null
@@ -48,10 +50,13 @@ const KeycloakProvider: React.FunctionComponent<Props> = ({children}) => {
         }
     }
 
+    const isAdmin: boolean = !!token?.hasRole("admin")
+
     return (
         <Context.Provider value={{
             error,
             isLoggedIn,
+            isAdmin,
             login,
             logout,
             token

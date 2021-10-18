@@ -2,13 +2,13 @@ import React from 'react';
 import classNames from 'classnames';
 
 // Styles
-import styles from './Error.module.scss';
+import styles from './ErrorMessage.module.scss';
 
 interface Props extends React.ComponentProps<'div'> {
     error: Error | null
 }
 
-const Error: React.FunctionComponent<Props> = ({className, error, ...props}) => {
+const ErrorMessage: React.FunctionComponent<Props> = ({className, error, ...props}) => {
     const classes = classNames(styles.root, className)
 
     if (!error) {
@@ -22,4 +22,4 @@ const Error: React.FunctionComponent<Props> = ({className, error, ...props}) => 
     )
 }
 
-export default Error;
+export default ErrorMessage;

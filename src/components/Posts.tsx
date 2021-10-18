@@ -1,5 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import useSWR from 'swr';
 import classNames from 'classnames';
+
+// Constants
+import { POSTS_URL } from "../constants";
 
 // Services
 import { axios } from "../services/axios";
@@ -27,25 +31,19 @@ interface Post {
 interface Props extends React.ComponentProps<'div'> {}
 
 const Posts: React.FunctionComponent<Props> = ({className, ...props}) => {
-    const [posts, setPosts] = useState<Post[]>([]);
+    const fetcher = (url: string) => axios.get(url).then(res => res.data)
+    const { data: posts, error } = useSWR<Post[]>(POSTS_URL, fetcher)
 
     const classes = classNames(styles.root)
 
-    useEffect(() => {
-        (async () => {
-            const { data } = await axios.get('http://localhost:8000/posts')
-            setPosts(data)
-        })()
-    },[])
-
     const renderPosts = () => {
-        if (!posts.length) {
+        if (!posts?.length) {
             return <p>No latest posts</p>
         }
 
         return (
             <div className={classes} {...props}>
-                {posts.sort((postA, postB) => {
+                {posts?.sort((postA, postB) => {
                     return new Date(postB.updatedAt).getTime() - new Date(postA.updatedAt).getTime()
                 }).map((post) => {
                     return (
@@ -60,6 +58,9 @@ const Posts: React.FunctionComponent<Props> = ({className, ...props}) => {
             </div>
         )
     }
+
+    if (error) return <div>failed to load</div>
+    if (!posts) return <div>loading...</div>
 
     return (
         <div className={styles.root}>

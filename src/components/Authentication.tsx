@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 
 // Components
-import Error from './Error';
+import ErrorMessage from './ErrorMessage';
 
 // Styles
 import styles from './Authentication.module.scss';
@@ -48,7 +48,7 @@ const Authentication: React.FunctionComponent<Props> = ({className, ...props}) =
     return (
         <div className={classes} {...props}>
             {renderLogin()}
-            <Error error={error}/>
+            <ErrorMessage error={error}/>
         </div>
     )
 }
