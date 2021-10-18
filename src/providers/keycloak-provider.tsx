@@ -1,16 +1,68 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import { Token } from "@r3s-dev/keycloak-js";
 
-const KeycloakContext = React.createContext(null);
+// Services
+import { keycloak } from "../services/keycloak";
+
+interface KeycloakContext {
+    error: Error | null;
+    isLoggedIn: boolean;
+    login: (username: string, password: string) => Promise<void>;
+    logout: () => Promise<void>;
+    token: Token | null;
+}
+
+const Context = React.createContext<KeycloakContext>({
+    error: null,
+    isLoggedIn: false,
+    login: () => Promise.resolve(),
+    logout: () => Promise.resolve(),
+    token: null
+});
 
 interface Props {}
 
 const KeycloakProvider: React.FunctionComponent<Props> = ({children}) => {
-    const value = null
+    const [token, setToken] = useState<Token | null>(null);
+    const [error, setError] = useState<Error | null>(null);
+
+    const isLoggedIn = !!token && token.isValid();
+
+    const login = async (username: string, password: string) => {
+        setError(null);
+        try {
+            const result = await keycloak.login({username, password});
+            setToken(result);
+        } catch (error: any) {
+            setError(error)
+        }
+    };
+
+    const logout = async () => {
+        setError(null);
+        try {
+            await keycloak.logout();
+            setToken(null)
+        } catch (error: any) {
+            setError(error)
+        }
+    }
+
     return (
-        <KeycloakContext.Provider value={value}>
+        <Context.Provider value={{
+            error,
+            isLoggedIn,
+            login,
+            logout,
+            token
+        }}>
             {children}
-        </KeycloakContext.Provider>
+        </Context.Provider>
     )
 }
 
-export {KeycloakProvider}
+const useKeycloak = () => {
+    return useContext(Context);
+}
+
+export {KeycloakProvider as default, useKeycloak}

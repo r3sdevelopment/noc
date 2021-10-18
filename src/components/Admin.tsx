@@ -1,12 +1,17 @@
 import React from 'react';
 import classNames from 'classnames';
 
+// Hooks
+import { useKeycloak } from "../providers/keycloak-provider";
+
 // Styles
 import styles from './Admin.module.scss';
 
 interface Props extends React.ComponentProps<'div'> {}
 
 const Admin: React.FunctionComponent<Props> = ({className, ...props}) => {
+    const {token} = useKeycloak();
+
     // const url = 'https://api.r3s.dev/api/posts';
     // // const url = 'http://localhost:8000/api/posts';
     //
@@ -43,6 +48,11 @@ const Admin: React.FunctionComponent<Props> = ({className, ...props}) => {
     // }
 
     const classes = classNames(styles.root, className)
+
+    if (!token?.hasRole("admin")) {
+        return null;
+    }
+
     return (
         <div className={classes} {...props}>
             <h2>Admin</h2>

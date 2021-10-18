@@ -5,6 +5,7 @@ import classNames from "classnames";
 import Admin from './components/Admin';
 import Authentication from './components/Authentication';
 import Posts from "./components/Posts";
+import KeycloakProvider from "./providers/keycloak-provider";
 
 // Styles
 import styles from './App.module.scss'
@@ -15,12 +16,14 @@ const App: React.FunctionComponent<Props> = ({className, ...props}) => {
     const classes = classNames(styles.root, className)
 
     return (
-        <div className={classes} {...props}>
-            <h1>noc.r3s.dev</h1>
-            <Authentication />
-            <Posts />
-            <Admin />
-        </div>
+        <KeycloakProvider>
+            <div className={classes} {...props}>
+                <h1>noc.r3s.dev</h1>
+                <Authentication />
+                <Posts />
+                <Admin />
+            </div>
+        </KeycloakProvider>
     );
 };
 
