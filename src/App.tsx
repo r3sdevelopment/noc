@@ -18,10 +18,17 @@ const App: React.FunctionComponent<Props> = ({className, ...props}) => {
     return (
         <KeycloakProvider>
             <div className={classes} {...props}>
-                <h1>noc.r3s.dev</h1>
+                <header>
+                    <h1>noc.r3s.dev</h1>
+                </header>
                 <Authentication />
                 <Posts />
                 <Admin />
+                <footer>
+                    <small>
+                        {process.env.NODE_ENV}
+                    </small>
+                </footer>
             </div>
         </KeycloakProvider>
     );
