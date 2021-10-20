@@ -4,3 +4,11 @@
   align-items: center;
   justify-content: center;
 }
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
+  width: 100%;
+}

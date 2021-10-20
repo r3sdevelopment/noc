@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Token } from "@r3s-dev/keycloak-js";
 
 // Services
 import { keycloak } from "../services/keycloak";
 
+// Types
 interface KeycloakContext {
     error: Error | null;
     isLoggedIn: boolean;
@@ -24,17 +25,23 @@ const Context = React.createContext<KeycloakContext>({
 
 interface Props {}
 
+const R3S_REFRESH_TOKEN = 'R3S_REFRESH_TOKEN';
+
 const KeycloakProvider: React.FunctionComponent<Props> = ({children}) => {
     const [token, setToken] = useState<Token | null>(null);
     const [error, setError] = useState<Error | null>(null);
 
     const isLoggedIn = !!token && token.isValid();
+    const isAdmin: boolean = !!token?.hasRole("admin")
 
     const login = async (username: string, password: string) => {
         setError(null);
         try {
-            const result = await keycloak.login({username, password});
-            setToken(result);
+            const token = await keycloak.login({username, password});
+            if (token.refreshToken) {
+                sessionStorage.setItem(R3S_REFRESH_TOKEN, token.refreshToken)
+            }
+            setToken(token);
         } catch (error: any) {
             setError(error)
         }
@@ -50,7 +57,28 @@ const KeycloakProvider: React.FunctionComponent<Props> = ({children}) => {
         }
     }
 
-    const isAdmin: boolean = !!token?.hasRole("admin")
+    useEffect(() => {
+        try {
+            const refreshToken = sessionStorage.getItem(R3S_REFRESH_TOKEN);
+            if (refreshToken) {
+               (async () => {
+                   try {
+                       const data = await keycloak.refreshToken(refreshToken)
+                       const token = await keycloak.verifyToken(data.access_token);
+                       if (token) {
+                           setToken(token)
+                       }
+                   } catch (error) {
+                       console.error(error)
+                   }
+
+               })()
+            }
+        } catch (error) {
+            console.error('Unable to parse saved token')
+        }
+
+    },[])
 
     return (
         <Context.Provider value={{

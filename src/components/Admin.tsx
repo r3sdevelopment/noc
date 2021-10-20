@@ -27,19 +27,28 @@ const Admin: React.FunctionComponent<Props> = ({className, ...props}) => {
         return null;
     }
 
-    if (error) return <div>Failed to load</div>
-    if (!posts) return <div>loading...</div>
+    const renderPosts = () => {
+        if (error) return <div>Failed to load</div>
+        if (!posts) return <div>loading...</div>
+
+        return (
+            <React.Fragment>
+                <code>
+                <pre>
+                    {JSON.stringify(posts, undefined, 2)}
+                </pre>
+                </code>
+                <button>create post</button>
+            </React.Fragment>
+        )
+    }
+
+
 
     return (
         <div className={classes} {...props}>
             <h2>Admin</h2>
-            <code>
-                <pre>
-                    {JSON.stringify(posts, undefined, 2)}
-                </pre>
-            </code>
-
-            <button>create post</button>
+            {renderPosts()}
         </div>
     )
 }

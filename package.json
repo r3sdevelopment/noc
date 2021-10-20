@@ -1,6 +1,6 @@
 {
   "name": "noc",
-  "version": "0.1.0-alpha9",
+  "version": "0.1.0-alpha11",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -9,7 +9,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@r3s-dev/keycloak-js": ">=0.1.0-alpha9",
+    "@r3s-dev/keycloak-js": "^0.1.0-alpha12",
     "@types/jest": "^26.0.15",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",

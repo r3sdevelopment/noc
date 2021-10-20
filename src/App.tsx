@@ -22,8 +22,10 @@ const App: React.FunctionComponent<Props> = ({className, ...props}) => {
                     <h1>noc.r3s.dev</h1>
                 </header>
                 <Authentication />
-                <Posts />
-                <Admin />
+                <div className={styles.row}>
+                    <Admin />
+                    <Posts />
+                </div>
                 <footer>
                     <small>
                         {process.env.NODE_ENV}
